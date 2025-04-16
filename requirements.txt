@@ -6,4 +6,5 @@ pytest-django
 web3
 py
 titanoboa
+psycopg2-binary
 

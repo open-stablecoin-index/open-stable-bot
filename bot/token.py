@@ -2,7 +2,6 @@ import boa
 from django.conf import settings
 from boa.contracts.abi.abi_contract import ABIContractFactory
 
-
 boa.fork(settings.RPC)
 
 def load_erc20(addr):
@@ -13,15 +12,7 @@ def get_squill_balance(addr):
     squill = load_erc20("0x7ebab7190d3d574ce82d29f2fa1422f18e29969c") 
     return(squill.balanceOf(addr)) 
 
-
-def load_from_impl(contract_addr, abi_file, name=None):
-    if name is None:
-        name = contract_addr
-    abi = fetch_abi_from_etherscan(abi_addr, ARBISCAN_API, ARBISCAN_KEY)
-    return ABIContractFactory.from_abi_dict(abi, name=name).at(contract_addr)
-
 def get_airdrop_balance(addr):
-    #squill_drop = load_from_impl('0x0065780b1fe32927f14448446882f1261d936d12', "{settings.BASE_DIR}/bot/squilldrop.json"
     squill_drop_abi = boa.load_abi(f"{settings.BASE_DIR}/bot/squilldrop.json")
     squill_drop = squill_drop_abi.at('0x0065780b1fe32927f14448446882f1261d936d12')
     return squill_drop.eligible_addresses(addr)

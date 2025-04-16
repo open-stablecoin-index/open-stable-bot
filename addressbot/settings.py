@@ -97,14 +97,24 @@ WSGI_APPLICATION = "addressbot.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
+    "sqlite": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
         "OPTIONS": {
             "timeout": 20,
             "check_same_thread": False,
         },
-    }
+    },
+
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql', 
+            'NAME': os.getenv('POSTGRE_DBNAME'),
+            'USER':  os.getenv('POSTGRE_USER'),
+            'PASSWORD':  os.getenv('POSTGRE_PASS'),
+            'HOST':  os.getenv('POSTGRE_HOST'), 
+            'PORT':  os.getenv('POSTGRE_PORT'),
+        }
+
 }
 
 

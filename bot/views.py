@@ -158,6 +158,7 @@ def webhook(request):
                 else:
                     try:
                         squilldrop_bal = get_airdrop_balance(eth_address)
+                        run_post(f"Squill Bal {squilldrop_bal} {eth_address} ", gchat)
                     except Exception as e:
                         run_post(f"Error checking {eth_address} {telegram} {e}", gchat) 
                         squilldrop_bal = 0
