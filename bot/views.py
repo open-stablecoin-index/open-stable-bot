@@ -5,6 +5,7 @@ import requests
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
 
 from bot.models import Update, User
 from bot.telegram import (  # telegram_post,; delete_msg,; get_channel_name,; get_channel_type,; get_admin_chat_target,; update_msg,; update_msg_media,; update_msg_caption,; forward_message,; show_draft,; get_chat_admins,; is_user_admin,
@@ -140,12 +141,13 @@ def webhook(request):
                     return
 
             if eth_address:
-                user, created = User.objects.get_or_create(
-                    telegram_account=telegram,
-                    username=f"tg:{telegram}-{telegram_id}",
-                )
-                user.ethereum_address = eth_address
-                user.save()
+                with transaction.atomic():
+                    user, created = User.objects.get_or_create(
+                        telegram_account=telegram,
+                        username=f"tg:{telegram}-{telegram_id}",
+                    )
+                    user.ethereum_address = eth_address
+                    user.save()
 
                 try:
                     squill_bal = get_squill_balance(eth_address)
@@ -158,7 +160,6 @@ def webhook(request):
                 else:
                     try:
                         squilldrop_bal = get_airdrop_balance(eth_address)
-                        run_post(f"Squill Bal {squilldrop_bal} {eth_address} ", gchat)
                     except Exception as e:
                         run_post(f"Error checking {eth_address} {telegram} {e}", gchat) 
                         squilldrop_bal = 0
