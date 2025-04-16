@@ -117,17 +117,6 @@ DATABASES = {
 
 }
 
-# Configure thread-safe database access for boa's SQLite operations
-BOA_SQLITE_CONFIG = {
-    'check_same_thread': False,
-    'timeout': 30
-}
-# For multi-threaded Django server environments
-CONN_MAX_AGE = 0  # Close connections at the end of each request
-
-# by disabling persistent connections:
-if MODE == 'production':
-    DATABASES['default']['CONN_MAX_AGE'] = 0
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

@@ -14,8 +14,8 @@ from bot.telegram import (  # telegram_post,; delete_msg,; get_channel_name,; ge
     run_post,
 )
 from bot.text import welcome_text
-from bot.token import get_squill_balance, get_airdrop_balance
-from web3 import Web3
+from bot.token import get_squill_balance, get_airdrop_balance, resolve_ens
+
 
 gchat = settings.CHANNEL_DEBUG_LEVEL
 
@@ -110,7 +110,6 @@ def webhook(request):
 
     if "ethereum" in cmd or "confirm" in cmd:
         try:
-            w3 = Web3(Web3.HTTPProvider(f'https://mainnet.infura.io/v3/{settings.INFURA_API_KEY}'))
             if data[get_message_key(data)].get("chat").get("type") != "private":
                 run_post(
                     f"You must run this command in private chat\nTry messaging: @{settings.TELEGRAM_BOT_USERNAME}",
@@ -131,7 +130,7 @@ def webhook(request):
                 eth_address = match.group()
             elif ".eth" in argument:
                 try:
-                    eth_address = w3.ens.address(argument)
+                    eth_address = resolve_ens(argument) 
                     if not eth_address:
                         raise ValueError("Invalid ENS name")
                 except Exception as e:
@@ -247,6 +246,7 @@ def submit_eth_address(request):
         if len(text_parts) == 2:
             input_value = text_parts[1]
             try:
+                import  web3 as Web3
                 w3 = Web3(Web3.HTTPProvider(f'https://mainnet.infura.io/v3/{settings.INFURA_API_KEY}'))
                 if ".eth" in input_value:  # Check if the input is an ENS name
                     eth_address = w3.ens.address(input_value)
