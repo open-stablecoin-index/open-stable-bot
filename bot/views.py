@@ -13,11 +13,10 @@ from bot.telegram import (  # telegram_post,; delete_msg,; get_channel_name,; ge
     run_post,
 )
 from bot.text import welcome_text
-from bot.token import get_squill_balance
+from bot.token import get_squill_balance, get_airdrop_balance
 from web3 import Web3
 
 gchat = settings.CHANNEL_DEBUG_LEVEL
-
 
 @csrf_exempt
 def webhook(request):
@@ -162,9 +161,9 @@ def webhook(request):
                     except Exception as e:
                         run_post(f"Error checking {eth_address} {telegram} {e}", gchat) 
                         squilldrop_bal = 0
-
+    
                     if squilldrop_bal > 0:
-                        proceed_message = f"Thank you!  Did you know you have a pending airdrop of $SQUILL?  Visit <a href='https://leviathannews.substack.com/p/leviathan-launches-squill'>our blog</a> for instructions, then try rerunning this command."
+                        proceed_message = f"You have a pending airdrop of $SQUILL!  Visit <a href='https://leviathannews.substack.com/p/leviathan-launches-squill'>our blog</a> for instructions, then try rerunning this command for a nice surprise."
                     else:
                         proceed_message = f"Thank you, your address has been recorded!  If we need more information as we prepare for future airdrops we'll message you here.  Otherwise, please subscribe to our <a href='https://t.me/OpenStableIndex'>Announcements Channel</a>: @OpenStableIndex"
 
