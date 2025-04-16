@@ -1,0 +1,81 @@
+# Events
+
+event Transfer:
+    sender: address
+    receiver: address
+    value: uint256
+
+
+event Approval:
+    owner: address
+    spender: address
+    value: uint256
+
+
+# Functions
+
+@external
+def transfer(_to: address, _value: uint256) -> bool:
+    ...
+
+
+@external
+def transferFrom(_from: address, _to: address, _value: uint256) -> bool:
+    ...
+
+
+@external
+def approve(_spender: address, _value: uint256) -> bool:
+    ...
+
+
+@external
+def mint(_to: address, _value: uint256):
+    ...
+
+
+@external
+def burn(_value: uint256):
+    ...
+
+
+@external
+def burnFrom(_to: address, _value: uint256):
+    ...
+
+
+@view
+@external
+def name() -> String[33]:
+    ...
+
+
+@view
+@external
+def symbol() -> String[32]:
+    ...
+
+
+@view
+@external
+def decimals() -> uint8:
+    ...
+
+
+@view
+@external
+def balanceOf(arg0: address) -> uint256:
+    ...
+
+
+@view
+@external
+def allowance(arg0: address, arg1: address) -> uint256:
+    ...
+
+
+@view
+@external
+def totalSupply() -> uint256:
+    ...
+

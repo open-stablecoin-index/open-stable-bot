@@ -1,0 +1,9 @@
+django
+requests
+python-dotenv
+pytest
+pytest-django
+web3
+py
+titanoboa
+
