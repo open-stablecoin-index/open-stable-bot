@@ -2,7 +2,7 @@ import json
 from web3 import Web3
 from django.conf import settings
 
-MIN_PRICE = 20
+MIN_PRICE = 100
 
 # Initialize Web3
 def get_web3():
@@ -103,7 +103,7 @@ def gatekeep(addr):
     if airdrop_bal > 10 ** 18:
         return False, f"HINT: Try <a href='https://leviathannews.substack.com/p/leviathan-launches-squill'>claiming your SQUILL-drop</a> and rerunning this command"
 
-    return False, f"Entry requires your wallet holds at least $20 worth of <a href='https://leviathannews.substack.com/p/leviathan-launches-squill'>$SQUILL</a>, <a href='https://leviathannews.substack.com/p/leviathan-news-squid-token-the-ultimate'>$SQUID</a> or <a href='https://www.coingecko.com/en/coins/reserve-rights'>$RSR</a>.  Click on the token links for more info."
+    return False, f"Entry requires your wallet holds at least ${MIN_PRICE} worth of <a href='https://leviathannews.substack.com/p/leviathan-launches-squill'>$SQUILL</a>, <a href='https://leviathannews.substack.com/p/leviathan-news-squid-token-the-ultimate'>$SQUID</a> or <a href='https://www.coingecko.com/en/coins/reserve-rights'>$RSR</a>.  Click on the token links for more info."
    
 
 def get_token_balance(w3, address, token):
