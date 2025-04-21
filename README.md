@@ -1,4 +1,5 @@
 # Address Bot
+![Open Reserve banner_one index](https://github.com/user-attachments/assets/371f6b9b-fb5c-4c0b-aa83-ae881671380b)
 
 A Django application that runs a Telegram bot to collect and verify Ethereum addresses. This bot enables users to link their Telegram accounts with their Ethereum wallets, verify wallet ownership, and join private groups based on token holdings.
 
