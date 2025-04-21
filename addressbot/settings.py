@@ -28,7 +28,8 @@ env_variables = [
     "CHANNEL_INFO_LEVEL",
     "CHANNEL_DEBUG_LEVEL",
     "RPC",
-    "INFURA_API_KEY"
+    "INFURA_API_KEY",
+    "SECRET_KEY"
 ]
 for var_name in env_variables:
     locals()[var_name] = os.getenv(var_name, None)
@@ -37,12 +38,10 @@ for var_name in env_variables:
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-f!s-!zsjuk5b-m3h3c$c@e5^ducfzs#lh3ukif8d5lq!occ(-3"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if MODE == 'production':
-    DEBUG = True
+    DEBUG = False
 else:
     DEBUG = True
 

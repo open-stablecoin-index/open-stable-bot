@@ -14,7 +14,7 @@ from bot.telegram import (  # telegram_post,; delete_msg,; get_channel_name,; ge
     run_post,
 )
 from bot.text import welcome_text
-from bot.token import get_squill_balance, get_airdrop_balance, resolve_ens
+from bot.token import resolve_ens, gatekeep
 
 
 gchat = settings.CHANNEL_DEBUG_LEVEL
@@ -31,6 +31,8 @@ def webhook(request):
         Update(raw=request.body, from_username="JSON ERROR").save()
         return HttpResponse("4", content_type="text/plain")
 
+    from_username = None
+    from_id = None
     try:
         message_key = get_message_key(data)
 
@@ -66,7 +68,7 @@ def webhook(request):
 
     try:
         if message_key == "message" and "new_chat_members" in data[message_key]:
-            process_new_member(data, message_key)
+            process_new_member(data, message_key, from_username, from_id)
     except Exception as e:
         run_post(f"Error kicking {e}", gchat)
         return HttpResponse("8", content_type="text/plain")
@@ -149,27 +151,19 @@ def webhook(request):
                     user.save()
 
                 try:
-                    squill_bal = get_squill_balance(eth_address)
+                    can_join, eligibility = gatekeep(eth_address)
                 except Exception as e:
-                    squill_bal = 0
-                    run_post(f"Error registering {eth_address} {telegram} {e}", gchat)
-
-                if squill_bal > 10 ** 18:
-                    proceed_message = f"Congrats!  With a balance of {squill_bal / 1e18:,.0f} $SQUILL you are eligible to join our private chat: <a href='{settings.TELEGRAM_GROUP_LINK}'>{settings.TELEGRAM_GROUP_LINK}</a>"
+                    run_post(f"Error checking {eth_address} {telegram} {e}", gchat)
+                    
+                if can_join:
+                    proceed_message = f"✅ Verified! {eligibility}\n🧺Access granted: <a href='{settings.TELEGRAM_GROUP_LINK}'>Join Chat</a>"
+                    #proceed_message = f"Congrats!  You are invited to join our secret token-gated chat: <a href='{settings.TELEGRAM_GROUP_LINK}'>{settings.TELEGRAM_GROUP_LINK}</a>.\n\nYour wallet has been permitted to join this chat because you hold {eligibility}."
                 else:
-                    try:
-                        squilldrop_bal = get_airdrop_balance(eth_address)
-                    except Exception as e:
-                        run_post(f"Error checking {eth_address} {telegram} {e}", gchat) 
-                        squilldrop_bal = 0
-    
-                    if squilldrop_bal > 0:
-                        proceed_message = f"You have a pending airdrop of $SQUILL!  Visit <a href='https://leviathannews.substack.com/p/leviathan-launches-squill'>our blog</a> for instructions, then try rerunning this command for a nice surprise."
-                    else:
-                        proceed_message = f"Thank you, your address has been recorded!  If we need more information as we prepare for future airdrops we'll message you here.  Otherwise, please subscribe to our <a href='https://t.me/OpenStableIndex'>Announcements Channel</a>: @OpenStableIndex"
+                    proceed_message = f"❌ Not Eligible: {eligibility}"
+                    #proceed_message = f"Your address has been recorded, but unfortunately your wallet is not eligible to join our secret token-gated chat.\n\n{eligibility}"
 
                 run_post(
-                    f"Ethereum address stored for username {telegram}: <code>{eth_address}</code>\n\n{proceed_message} ",
+                    f"📬 Address saved for username {telegram}: <code>{eth_address}</code>\n{proceed_message}",
                     chat_id,
                     message_thread,
                 )
@@ -298,6 +292,13 @@ def submit_eth_address(request):
         {"message": "Please sign the message using the provided URL"}, status=200
     )
 
+
+def process_new_member(data, message_key, from_username, from_id):
+    try:
+         
+        run_post(f"New Member {data} {message_key} {from_username} {from_id}", gchat)
+    except Exception as e:
+        run_post(f"Weird error {e}", gchat)
 
 def extract_argument(text, cmd):
     text_split = text.split(cmd)
